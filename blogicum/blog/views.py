@@ -49,7 +49,7 @@ def index(request):
     return render(request, template, context)
 
 
-def post_detail(request, id):
+def post_detail(request, post_id):
     template = 'blog/detail.html'
     # Для автора показываем все посты, для остальных - только опубликованные
     if request.user.is_authenticated:
@@ -58,7 +58,7 @@ def post_detail(request, id):
                 Q(is_published=True, category__is_published=True, pub_date__lte=timezone.now()) |
                 Q(author=request.user)
             ).select_related('category', 'location', 'author'),
-            pk=id
+            pk=post_id
         )
     else:
         post = get_object_or_404(
@@ -67,7 +67,7 @@ def post_detail(request, id):
                 category__is_published=True,
                 pub_date__lte=timezone.now()
             ).select_related('category', 'location', 'author'),
-            pk=id
+            pk=post_id
         )
     
     comments = post.comments.all()

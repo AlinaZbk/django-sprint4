@@ -8,7 +8,7 @@ User = get_user_model()
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ('title', 'text', 'pub_date', 'location', 'category', 'image')
+        fields = ('title', 'text', 'pub_date', 'location', 'category', 'is_published', 'image')
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'text': forms.Textarea(attrs={'class': 'form-control', 'rows': 10}),
@@ -17,7 +17,12 @@ class PostForm(forms.ModelForm):
             ),
             'location': forms.Select(attrs={'class': 'form-control'}),
             'category': forms.Select(attrs={'class': 'form-control'}),
+            'is_published': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'image': forms.FileInput(attrs={'class': 'form-control'}),
+        }
+        help_texts = {
+            'is_published': 'Снимите галочку, чтобы скрыть публикацию.',
+            'pub_date': 'Если установить дату и время в будущем — можно делать отложенные публикации.',
         }
 
 
