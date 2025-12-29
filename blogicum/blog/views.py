@@ -177,11 +177,11 @@ class PostUpdateView(LoginRequiredMixin, UpdateView):
     def dispatch(self, request, *args, **kwargs):
         post = self.get_object()
         if post.author != request.user:
-            return redirect('blog:post_detail', id=post.id)
+            return redirect('blog:post_detail', post_id=post.id)
         return super().dispatch(request, *args, **kwargs)
     
     def get_success_url(self):
-        return reverse_lazy('blog:post_detail', kwargs={'id': self.object.id})
+        return reverse_lazy('blog:post_detail', kwargs={'post_id': self.object.id})
 
 
 class PostDeleteView(LoginRequiredMixin, DeleteView):
@@ -192,7 +192,7 @@ class PostDeleteView(LoginRequiredMixin, DeleteView):
     def dispatch(self, request, *args, **kwargs):
         post = self.get_object()
         if post.author != request.user:
-            return redirect('blog:post_detail', id=post.id)
+            return redirect('blog:post_detail', post_id=post.id)
         return super().dispatch(request, *args, **kwargs)
     
     def get_success_url(self):
@@ -209,7 +209,7 @@ def add_comment(request, post_id):
         comment.post = post
         comment.author = request.user
         comment.save()
-    return redirect('blog:post_detail', id=post_id)
+    return redirect('blog:post_detail', post_id=post_id)
 
 
 @login_required
@@ -218,12 +218,12 @@ def edit_comment(request, post_id, comment_id):
     comment = get_object_or_404(Comment, pk=comment_id, post=post)
     
     if comment.author != request.user:
-        return redirect('blog:post_detail', id=post_id)
+        return redirect('blog:post_detail', post_id=post_id)
     
     form = CommentForm(request.POST or None, instance=comment)
     if form.is_valid():
         form.save()
-        return redirect('blog:post_detail', id=post_id)
+        return redirect('blog:post_detail', post_id=post_id)
     
     template = 'blog/comment.html'
     context = {
@@ -240,11 +240,11 @@ def delete_comment(request, post_id, comment_id):
     comment = get_object_or_404(Comment, pk=comment_id, post=post)
     
     if comment.author != request.user:
-        return redirect('blog:post_detail', id=post_id)
+        return redirect('blog:post_detail', post_id=post_id)
     
     if request.POST:
         comment.delete()
-        return redirect('blog:post_detail', id=post_id)
+        return redirect('blog:post_detail', post_id=post_id)
     
     template = 'blog/comment.html'
     context = {
